@@ -15,6 +15,7 @@ import io.swagger.models.Scheme;
 import io.swagger.models.Swagger;
 
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.*;
 import java.util.HashMap;
 import java.util.List;
@@ -25,14 +26,13 @@ public abstract class AbstractSwaggerResource {
     @Inject
     private Swagger swagger;
 
-    protected Response.ResponseBuilder getListing(HttpHeaders headers, UriInfo uriInfo) {
+    protected Object getListing(HttpHeaders headers, UriInfo uriInfo) {
         addRequestInfoToSwagger(uriInfo);
         if (swagger != null) {
             swagger = getFilteredSwagger(headers, uriInfo, swagger);
-            Object serializedSwagger = serializeSwagger(swagger);
-            return Response.ok().entity(serializedSwagger);
+            return serializeSwagger(swagger);
         } else {
-            return Response.status(404);
+            throw new NotFoundException();
         }
     }
 

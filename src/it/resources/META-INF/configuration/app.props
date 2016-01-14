@@ -10,6 +10,9 @@
 application-name = Test API
 application-version = 1.0.2
 
-
 [org.seedstack.seed.server]
 port=9001
+
+[org.seedstack.seed.web]
+cors.enabled = true
+cors.property.supportedMethods = GET\\, POST\\, HEAD\\, OPTIONS\\, PUT\\, DELETE

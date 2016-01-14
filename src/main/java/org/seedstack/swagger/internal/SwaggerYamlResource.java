@@ -32,7 +32,7 @@ public class SwaggerYamlResource extends AbstractSwaggerResource {
     @Produces("application/yaml")
     @ApiOperation(value = "The swagger definition in YAML", hidden = true)
     public Response getListingYaml(@Context HttpHeaders headers, @Context UriInfo uriInfo) {
-        return getListing(headers, uriInfo).type("application/yaml").build();
+        return Response.ok(getListing(headers, uriInfo)).type("application/yaml").build();
     }
 
     protected Object serializeSwagger(Swagger swagger) {

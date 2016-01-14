@@ -7,9 +7,11 @@
  */
 package org.seedstack.swagger.internal;
 
+import com.google.common.collect.Lists;
 import io.swagger.config.FilterFactory;
 import io.swagger.core.filter.SpecFilter;
 import io.swagger.core.filter.SwaggerSpecFilter;
+import io.swagger.models.Scheme;
 import io.swagger.models.Swagger;
 
 import javax.inject.Inject;
@@ -24,12 +26,22 @@ public abstract class AbstractSwaggerResource {
     private Swagger swagger;
 
     protected Response.ResponseBuilder getListing(HttpHeaders headers, UriInfo uriInfo) {
+        addRequestInfoToSwagger(uriInfo);
         if (swagger != null) {
             swagger = getFilteredSwagger(headers, uriInfo, swagger);
             Object serializedSwagger = serializeSwagger(swagger);
             return Response.ok().entity(serializedSwagger);
         } else {
             return Response.status(404);
+        }
+    }
+
+    protected void addRequestInfoToSwagger(UriInfo uriInfo) {
+        if (swagger.getSchemes() == null || swagger.getSchemes().isEmpty()) {
+            swagger.setSchemes(Lists.newArrayList(Scheme.forValue(uriInfo.getBaseUri().getScheme())));
+        }
+        if (swagger.getHost() == null || swagger.getHost().equals("")) {
+            swagger.setHost(uriInfo.getBaseUri().getHost() + ":" + uriInfo.getBaseUri().getPort());
         }
     }
 

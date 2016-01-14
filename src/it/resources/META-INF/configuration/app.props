@@ -6,8 +6,10 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-[org.seedstack.swagger]
-host=localhost:8080
-version=1.0.2
-schemes=http
-base-path=/
+[org.seedstack.seed.core]
+application-name = Test API
+application-version = 1.0.2
+
+
+[org.seedstack.seed.server]
+port=9001

@@ -9,6 +9,7 @@ package org.seedstack.swagger.internal;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.configuration.Configuration;
+import org.seedstack.seed.Application;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,11 +144,29 @@ public class SwaggerConfiguration {
         this.filterClass = filterClass;
     }
 
+    SwaggerConfiguration init(Application application) {
+        if (isNotEmpty(application.getName())) {
+            this.title = application.getName();
+        }
+        if (isNotEmpty(application.getVersion())) {
+            this.version = application.getVersion();
+        }
+        return this;
+    }
+
+    private boolean isNotEmpty(String s) {
+        return s != null && !s.equals("");
+    }
+
     SwaggerConfiguration init(Configuration configuration) {
         Configuration swaggerConfiguration = configuration.subset(PREFIX);
-        this.title = swaggerConfiguration.getString("title");
+        if (swaggerConfiguration.containsKey("title")) {
+            this.title = swaggerConfiguration.getString("title");
+        }
         this.description = swaggerConfiguration.getString("description");
-        this.version = swaggerConfiguration.getString("version");
+        if (swaggerConfiguration.containsKey("version")) {
+            this.version = swaggerConfiguration.getString("version");
+        }
         this.host = swaggerConfiguration.getString("host");
         this.schemes = arrayToList(swaggerConfiguration.getStringArray("schemes"));
         this.basePath = swaggerConfiguration.getString("base-path");

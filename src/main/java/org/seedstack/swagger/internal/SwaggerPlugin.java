@@ -39,9 +39,13 @@ public class SwaggerPlugin extends AbstractPlugin {
     @Override
     public InitState init(InitContext initContext) {
         SwaggerConfiguration swaggerConfiguration = new SwaggerConfiguration();
+
+        String restPath = initContext.dependency(RestPlugin.class).getConfiguration().getRestPath();
+        swaggerConfiguration.setBasePath(restPath);
+
         Application application = initContext.dependency(ApplicationPlugin.class).getApplication();
-        swaggerConfiguration.setTitle(application.getName());
-        swaggerConfiguration.setVersion(application.getVersion());
+        swaggerConfiguration.init(application);
+
         Configuration configuration = initContext.dependency(ConfigurationProvider.class).getConfiguration();
         swaggerConfiguration.init(configuration);
 

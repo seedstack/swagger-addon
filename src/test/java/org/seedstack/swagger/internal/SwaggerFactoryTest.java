@@ -87,4 +87,15 @@ public class SwaggerFactoryTest {
 
         assertThat(FilterFactory.getFilter()).isInstanceOf(MyFilter.class);
     }
+
+    @Test
+    public void testCreateSwaggerWithApplication() {
+        SwaggerConfiguration config = new SwaggerConfiguration().init(new CustomApplication());
+
+        Swagger swagger = underTest.createSwagger(config, new ArrayList<Class<?>>());
+
+        assertThat(swagger).isNotNull();
+        assertThat(swagger.getInfo().getTitle()).isEqualTo(TITLE);
+        assertThat(swagger.getInfo().getVersion()).isEqualTo(VERSION);
+    }
 }

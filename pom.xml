@@ -22,7 +22,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <seed.version>2.1.1-SNAPSHOT</seed.version>
+        <seed.version>2.2.0-SNAPSHOT</seed.version>
 
         <compatibility.skip>true</compatibility.skip>
     </properties>
@@ -79,9 +79,13 @@
 
         <dependency>
             <groupId>io.swagger</groupId>
-            <artifactId>swagger-jaxrs</artifactId>
+            <artifactId>swagger-jersey2-jaxrs</artifactId>
             <version>1.5.0</version>
             <exclusions>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.containers</groupId>
+                    <artifactId>jersey-container-servlet-core</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>org.reflections</groupId>
                     <artifactId>reflections</artifactId>

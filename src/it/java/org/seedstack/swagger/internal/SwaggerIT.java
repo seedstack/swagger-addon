@@ -8,6 +8,7 @@
 package org.seedstack.swagger.internal;
 
 import com.jayway.restassured.response.Response;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +23,35 @@ import static com.jayway.restassured.RestAssured.expect;
 public class SwaggerIT {
 
     private static final String BASE_URL = "http://localhost:9001";
-    private static final String SWAGGER = "{\"swagger\":\"2.0\",\"info\":{\"description\":null,\"version\":\"1.0.2\",\"title\":\"Test API\",\"termsOfService\":null,\"contact\":null,\"license\":null},\"host\":\"localhost:9001\",\"basePath\":null,\"tags\":null,\"schemes\":[\"http\"],\"consumes\":null,\"produces\":null,\"paths\":{\"/hello/{name}\":{\"get\":{\"tags\":null,\"summary\":null,\"description\":null,\"operationId\":\"hello\",\"schemes\":null,\"consumes\":null,\"produces\":null,\"parameters\":[{\"name\":\"name\",\"in\":\"path\",\"description\":null,\"required\":true,\"type\":\"string\",\"items\":null,\"collectionFormat\":null,\"default\":null,\"maximum\":null,\"exclusiveMaximum\":null,\"minimum\":null,\"exclusiveMinimum\":null,\"pattern\":null,\"format\":null,\"enum\":null}],\"responses\":{\"200\":{\"description\":\"successful operation\",\"schema\":{\"type\":\"string\",\"format\":null,\"example\":null,\"xml\":null,\"position\":null,\"description\":null,\"title\":null,\"readOnly\":null,\"minLength\":null,\"maxLength\":null,\"pattern\":null,\"default\":null,\"enum\":null},\"examples\":null,\"headers\":{}}},\"security\":null,\"externalDocs\":null,\"deprecated\":null},\"post\":null,\"put\":null,\"delete\":null,\"options\":null,\"patch\":null,\"parameters\":null}},\"securityDefinitions\":null,\"definitions\":null,\"parameters\":null,\"externalDocs\":null,\"securityRequirement\":null}";
+    private static final String SWAGGER_JSON = "{\"swagger\":\"2.0\",\"info\":{\"version\":\"1.0.2\",\"title\":\"Test API\"},\"host\":\"localhost:9001\",\"schemes\":[\"http\"],\"paths\":{\"/hello/{name}\":{\"get\":{\"summary\":\"Say hello the user\",\"description\":\"\",\"operationId\":\"hello\",\"produces\":[\"text/plain\"],\"parameters\":[{\"name\":\"name\",\"in\":\"path\",\"description\":\"The user name\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"successful operation\",\"schema\":{\"type\":\"string\"}}}}}}}";
+    private static final String SWAGGER_YAML = "---\n" +
+            "swagger: \"2.0\"\n" +
+            "info:\n" +
+            "  version: \"1.0.2\"\n" +
+            "  title: \"Test API\"\n" +
+            "host: \"localhost:9001\"\n" +
+            "schemes:\n" +
+            "- \"http\"\n" +
+            "paths:\n" +
+            "  /hello/{name}:\n" +
+            "    get:\n" +
+            "      summary: \"Say hello the user\"\n" +
+            "      description: \"\"\n" +
+            "      operationId: \"hello\"\n" +
+            "      produces:\n" +
+            "      - \"text/plain\"\n" +
+            "      parameters:\n" +
+            "      - name: \"name\"\n" +
+            "        in: \"path\"\n" +
+            "        description: \"The user name\"\n" +
+            "        required: true\n" +
+            "        type: \"string\"\n" +
+            "      responses:\n" +
+            "        200:\n" +
+            "          description: \"successful operation\"\n" +
+            "          schema:\n" +
+            "            type: \"string\"\n";
+
     private SeedLauncher launcher;
 
     @Before
@@ -32,15 +61,19 @@ public class SwaggerIT {
     }
 
     @Test
-    public void exposeSwagger() throws Exception {
-        expect().statusCode(200).given().contentType(MediaType.APPLICATION_JSON)
-                .get(BASE_URL + "/swagger.yaml");
-
+    public void exposeSwaggerJson() throws Exception {
         Response response = expect().statusCode(200).given().contentType(MediaType.APPLICATION_JSON)
                 .get(BASE_URL + "/swagger.json");
 
-        response.print();
-        JSONAssert.assertEquals(response.asString(), SWAGGER, true);
+        JSONAssert.assertEquals(response.asString(), SWAGGER_JSON, true);
+    }
+
+    @Test
+    public void exposeSwaggerYaml() throws Exception {
+        String response = expect().statusCode(200).given().contentType(MediaType.APPLICATION_JSON)
+                .get(BASE_URL + "/swagger.yaml").asString();
+
+        Assertions.assertThat(response).isEqualTo(SWAGGER_YAML);
     }
 
     @After

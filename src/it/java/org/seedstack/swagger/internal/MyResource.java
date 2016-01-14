@@ -8,10 +8,10 @@
 package org.seedstack.swagger.internal;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 
 @Api
 @Path("/hello")
@@ -19,7 +19,9 @@ public class MyResource {
 
     @GET
     @Path("/{name}")
-    public String hello(@PathParam("name") String name) {
+    @Produces("text/plain")
+    @ApiOperation(value = "Say hello the user", produces = "text/plain")
+    public String hello(@ApiParam(value = "The user name", required = true) @PathParam("name") String name) {
         return "hello " + name;
     }
 }

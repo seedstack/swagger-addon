@@ -1,8 +1,8 @@
-# swagger-addon
+# Swagger add-on
 
 [![Build status](https://travis-ci.org/seedstack/swagger-addon.svg?branch=master)](https://travis-ci.org/seedstack/swagger-addon) [![Coverage Status](https://coveralls.io/repos/seedstack/swagger-addon/badge.svg?branch=master)](https://coveralls.io/r/seedstack/swagger-addon?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.seedstack.addons.swagger/swagger/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.seedstack.addons.swagger/swagger)
 
-This add-on automatically exposes a Swagger description of application JAX-RS resources.
+This SeedStack add-on automatically exposes a Swagger description of JAX-RS resources.
 
 # Copyright and license
 

@@ -15,6 +15,7 @@ import com.google.inject.Scopes;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.core.AbstractPlugin;
+import io.swagger.annotations.Api;
 import io.swagger.jaxrs.listing.SwaggerSerializers;
 import io.swagger.models.Swagger;
 import org.apache.commons.configuration.Configuration;
@@ -48,9 +49,19 @@ public class SwaggerPlugin extends AbstractPlugin implements RestProvider {
         configureWithDefaultValues(initContext, swaggerConfiguration);
         configureFromSwaggerProps(initContext, swaggerConfiguration);
 
-        Collection<Class<?>> resources = initContext.dependency(RestPlugin.class).resources();
+        Collection<Class<?>> resources = filterResources(initContext.dependency(RestPlugin.class).resources());
         swagger = new SwaggerFactory().createSwagger(swaggerConfiguration, resources);
         return InitState.INITIALIZED;
+    }
+
+    private Set<Class<?>> filterResources(Set<Class<?>> resources) {
+        Set<Class<?>> filteredClasses = new HashSet<Class<?>>();
+        for (Class<?> resource : resources) {
+            if (resource.getAnnotation(Api.class) != null) {
+                filteredClasses.add(resource);
+            }
+        }
+        return filteredClasses;
     }
 
     private void configureWithDefaultValues(InitContext initContext, SwaggerConfiguration swaggerConfiguration) {

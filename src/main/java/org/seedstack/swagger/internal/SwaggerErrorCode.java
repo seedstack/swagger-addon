@@ -7,8 +7,8 @@
  */
 package org.seedstack.swagger.internal;
 
-import org.seedstack.seed.ErrorCode;
+import org.seedstack.shed.exception.ErrorCode;
 
-public enum  SwaggerErrorCodes implements ErrorCode {
+enum SwaggerErrorCode implements ErrorCode {
     FAIL_TO_LOAD_FILTER
 }

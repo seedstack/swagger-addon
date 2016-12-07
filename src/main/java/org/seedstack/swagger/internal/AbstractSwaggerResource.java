@@ -63,7 +63,7 @@ public abstract class AbstractSwaggerResource {
     }
 
     private Map<String, List<String>> getQueryParams(MultivaluedMap<String, String> params) {
-        Map<String, List<String>> output = new HashMap<String, List<String>>();
+        Map<String, List<String>> output = new HashMap<>();
         if (params != null) {
             for (String key : params.keySet()) {
                 List<String> values = params.get(key);
@@ -74,7 +74,7 @@ public abstract class AbstractSwaggerResource {
     }
 
     private Map<String, String> getCookies(HttpHeaders headers) {
-        Map<String, String> output = new HashMap<String, String>();
+        Map<String, String> output = new HashMap<>();
         if (headers != null) {
             for (String key : headers.getCookies().keySet()) {
                 Cookie cookie = headers.getCookies().get(key);
@@ -86,7 +86,7 @@ public abstract class AbstractSwaggerResource {
 
 
     private Map<String, List<String>> getHeaders(HttpHeaders headers) {
-        Map<String, List<String>> output = new HashMap<String, List<String>>();
+        Map<String, List<String>> output = new HashMap<>();
         if (headers != null) {
             for (String key : headers.getRequestHeaders().keySet()) {
                 List<String> values = headers.getRequestHeaders().get(key);

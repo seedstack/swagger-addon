@@ -65,7 +65,7 @@ public class SwaggerIT {
         Response response = expect().statusCode(200).given().contentType(MediaType.APPLICATION_JSON)
                 .get(BASE_URL + "/swagger.json");
 
-        JSONAssert.assertEquals(response.asString(), SWAGGER_JSON, true);
+        JSONAssert.assertEquals(SWAGGER_JSON, response.asString(), true);
     }
 
     @Test

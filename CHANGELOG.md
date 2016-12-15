@@ -1,6 +1,6 @@
-# Version 2.0.0 (2016-12-??)
+# Version 2.0.0 (2016-12-15)
 
-* [brk] Moved to SeedStack 16.11 new configuration system.
+* [brk] Update to SeedStack 16.11 new configuration system.
 
 # Version 1.0.1 (2016-04-26)
 

@@ -74,7 +74,8 @@ class SwaggerFactory {
                     FilterFactory.setFilter(filter);
                 }
             } catch (Exception e) {
-                throw SeedException.wrap(e, SwaggerErrorCode.FAIL_TO_LOAD_FILTER);
+                throw SeedException.wrap(e, SwaggerErrorCode.FAIL_TO_LOAD_FILTER)
+                        .put("filterClass", config.getFilterClass());
             }
         }
     }

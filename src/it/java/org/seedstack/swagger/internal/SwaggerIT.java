@@ -12,7 +12,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.seedstack.seed.core.SeedMain;
+import org.seedstack.seed.core.Seed;
 import org.seedstack.seed.spi.SeedLauncher;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -56,7 +56,7 @@ public class SwaggerIT {
 
     @Before
     public void setUp() throws Exception {
-        launcher = SeedMain.getLauncher();
+        launcher = Seed.getLauncher();
         launcher.launch(new String[]{});
     }
 

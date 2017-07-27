@@ -1,3 +1,7 @@
+# Version 2.0.1 (2017-07-31)
+
+* [chg] Update to latest poms (for newer Jackson version).
+
 # Version 2.0.0 (2016-12-15)
 
 * [brk] Update to SeedStack 16.11 new configuration system.

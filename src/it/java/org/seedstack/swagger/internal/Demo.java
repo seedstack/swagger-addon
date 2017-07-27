@@ -10,8 +10,7 @@ package org.seedstack.swagger.internal;
 import org.seedstack.seed.core.SeedMain;
 
 public class Demo {
-
     public static void main(String[] args) throws Exception {
-        SeedMain.getLauncher().launch(args);
+        SeedMain.main(args);
     }
 }

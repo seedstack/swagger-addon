@@ -16,7 +16,10 @@ import io.swagger.models.Swagger;
 
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,10 +68,7 @@ public abstract class AbstractSwaggerResource {
     private Map<String, List<String>> getQueryParams(MultivaluedMap<String, String> params) {
         Map<String, List<String>> output = new HashMap<>();
         if (params != null) {
-            for (String key : params.keySet()) {
-                List<String> values = params.get(key);
-                output.put(key, values);
-            }
+            output.putAll(params);
         }
         return output;
     }

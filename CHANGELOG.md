@@ -1,4 +1,4 @@
-# Version 2.0.1 (2017-07-31)
+# Version 2.0.1 (2017-08-01)
 
 * [chg] Update to latest poms (for newer Jackson version).
 

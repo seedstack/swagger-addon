@@ -5,6 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+
 package org.seedstack.swagger.internal;
 
 import com.google.common.collect.Lists;
@@ -13,16 +14,15 @@ import io.swagger.core.filter.SpecFilter;
 import io.swagger.core.filter.SwaggerSpecFilter;
 import io.swagger.models.Scheme;
 import io.swagger.models.Swagger;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public abstract class AbstractSwaggerResource {
 
@@ -83,7 +83,6 @@ public abstract class AbstractSwaggerResource {
         }
         return output;
     }
-
 
     private Map<String, List<String>> getHeaders(HttpHeaders headers) {
         Map<String, List<String>> output = new HashMap<>();

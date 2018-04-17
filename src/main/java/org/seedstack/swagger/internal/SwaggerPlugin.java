@@ -5,7 +5,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+
 package org.seedstack.swagger.internal;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -16,18 +19,15 @@ import io.nuun.kernel.api.plugin.context.InitContext;
 import io.swagger.annotations.Api;
 import io.swagger.jaxrs.listing.SwaggerSerializers;
 import io.swagger.models.Swagger;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.seedstack.seed.Application;
 import org.seedstack.seed.core.internal.AbstractSeedPlugin;
 import org.seedstack.seed.rest.RestConfig;
 import org.seedstack.seed.rest.internal.RestPlugin;
 import org.seedstack.seed.rest.spi.RestProvider;
 import org.seedstack.swagger.SwaggerConfig;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class SwaggerPlugin extends AbstractSeedPlugin implements RestProvider {
     private Swagger swagger;
@@ -64,7 +64,8 @@ public class SwaggerPlugin extends AbstractSeedPlugin implements RestProvider {
         return filteredClasses;
     }
 
-    private void configureWithDefaultValues(SwaggerConfig swaggerConfig, RestConfig restConfig, Application application) {
+    private void configureWithDefaultValues(SwaggerConfig swaggerConfig, RestConfig restConfig,
+            Application application) {
         if (isNullOrEmpty(swaggerConfig.getBasePath()) && !isNullOrEmpty(restConfig.getPath())) {
             swaggerConfig.setBasePath(restConfig.getPath());
         }

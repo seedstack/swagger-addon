@@ -183,6 +183,7 @@
             <groupId>org.seedstack.seed</groupId>
             <artifactId>seed-web-undertow</artifactId>
             <version>${seed.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>

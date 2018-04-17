@@ -1,22 +1,26 @@
-/**
- * Copyright (c) 2013-2016, The SeedStack authors <http://seedstack.org>
+/*
+ * Copyright © 2013-2018, The SeedStack authors <http://seedstack.org>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+
 package org.seedstack.swagger.internal;
 
 import io.swagger.config.FilterFactory;
-import io.swagger.core.filter.SwaggerSpecFilter;
 import io.swagger.jaxrs.Reader;
 import io.swagger.jaxrs.listing.SwaggerSerializers;
-import io.swagger.models.*;
-import org.seedstack.seed.SeedException;
-import org.seedstack.swagger.SwaggerConfig;
-
+import io.swagger.models.Contact;
+import io.swagger.models.Info;
+import io.swagger.models.License;
+import io.swagger.models.Scheme;
+import io.swagger.models.Swagger;
 import java.util.Collection;
 import java.util.HashSet;
+import org.seedstack.seed.SeedException;
+import org.seedstack.shed.reflect.Classes;
+import org.seedstack.swagger.SwaggerConfig;
 
 class SwaggerFactory {
     Swagger createSwagger(SwaggerConfig config, Collection<Class<?>> resources) {
@@ -69,14 +73,13 @@ class SwaggerFactory {
     private void registerSwaggerSpecFilter(SwaggerConfig config) {
         if (config.getFilterClass() != null) {
             try {
-                SwaggerSpecFilter filter = (SwaggerSpecFilter) Class.forName(config.getFilterClass()).newInstance();
-                if (filter != null) {
-                    FilterFactory.setFilter(filter);
-                }
+                FilterFactory.setFilter(Classes.instantiateDefault(config.getFilterClass()));
             } catch (Exception e) {
                 throw SeedException.wrap(e, SwaggerErrorCode.FAIL_TO_LOAD_FILTER)
                         .put("filterClass", config.getFilterClass());
             }
+        } else {
+            FilterFactory.setFilter(null);
         }
     }
 }

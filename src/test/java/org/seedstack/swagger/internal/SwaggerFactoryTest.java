@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2013-2016, The SeedStack authors <http://seedstack.org>
+/*
+ * Copyright © 2013-2018, The SeedStack authors <http://seedstack.org>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,15 +7,14 @@
  */
 package org.seedstack.swagger.internal;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.swagger.config.FilterFactory;
 import io.swagger.models.Scheme;
 import io.swagger.models.Swagger;
+import java.util.ArrayList;
 import org.junit.Test;
 import org.seedstack.swagger.SwaggerConfig;
-
-import java.util.ArrayList;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class SwaggerFactoryTest {
     private static final String TITLE = "title";
@@ -31,7 +30,7 @@ public class SwaggerFactoryTest {
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
     private static final String BASE_PATH = "/";
-    private static final String FILTER_CLASS = "org.seedstack.swagger.internal.MyFilter";
+    private static final Class<MyFilter> FILTER_CLASS = MyFilter.class;
     private SwaggerFactory underTest = new SwaggerFactory();
 
     @Test

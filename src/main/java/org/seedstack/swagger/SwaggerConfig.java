@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2013-2016, The SeedStack authors <http://seedstack.org>
+/*
+ * Copyright © 2013-2018, The SeedStack authors <http://seedstack.org>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,11 +7,11 @@
  */
 package org.seedstack.swagger;
 
-import org.seedstack.coffig.Config;
-
+import io.swagger.core.filter.SwaggerSpecFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.seedstack.coffig.Config;
 
 @Config("swagger")
 public class SwaggerConfig {
@@ -28,7 +28,7 @@ public class SwaggerConfig {
     private List<String> schemes = new ArrayList<>();
     private String basePath;
     private boolean prettyPrint;
-    private String filterClass;
+    private Class<? extends SwaggerSpecFilter> filterClass;
 
     public String getTitle() {
         return title;
@@ -147,11 +147,11 @@ public class SwaggerConfig {
         return this;
     }
 
-    public String getFilterClass() {
+    public Class<? extends SwaggerSpecFilter> getFilterClass() {
         return filterClass;
     }
 
-    public SwaggerConfig setFilterClass(String filterClass) {
+    public SwaggerConfig setFilterClass(Class<? extends SwaggerSpecFilter> filterClass) {
         this.filterClass = filterClass;
         return this;
     }

@@ -1,13 +1,16 @@
-/**
- * Copyright (c) 2013-2016, The SeedStack authors <http://seedstack.org>
+/*
+ * Copyright © 2013-2018, The SeedStack authors <http://seedstack.org>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.swagger.internal;
+package org.seedstack.swagger;
 
-import com.jayway.restassured.response.Response;
+import static io.restassured.RestAssured.expect;
+
+import io.restassured.response.Response;
+import javax.ws.rs.core.MediaType;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -16,14 +19,15 @@ import org.seedstack.seed.core.Seed;
 import org.seedstack.seed.spi.SeedLauncher;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import javax.ws.rs.core.MediaType;
-
-import static com.jayway.restassured.RestAssured.expect;
-
 public class SwaggerIT {
 
     private static final String BASE_URL = "http://localhost:9001";
-    private static final String SWAGGER_JSON = "{\"swagger\":\"2.0\",\"info\":{\"version\":\"1.0.2\",\"title\":\"Test API\"},\"host\":\"localhost:9001\",\"schemes\":[\"http\"],\"paths\":{\"/hello/{name}\":{\"get\":{\"summary\":\"Say hello the user\",\"description\":\"\",\"operationId\":\"hello\",\"produces\":[\"text/plain\"],\"parameters\":[{\"name\":\"name\",\"in\":\"path\",\"description\":\"The user name\",\"required\":true,\"type\":\"string\"}],\"responses\":{\"200\":{\"description\":\"successful operation\",\"schema\":{\"type\":\"string\"}}}}}}}";
+    private static final String SWAGGER_JSON = "{\"swagger\":\"2.0\",\"info\":{\"version\":\"1.0.2\",\"title\":\"Test" +
+            " API\"},\"host\":\"localhost:9001\",\"schemes\":[\"http\"]," +
+            "\"paths\":{\"/hello/{name}\":{\"get\":{\"summary\":\"Say hello the user\",\"description\":\"\"," +
+            "\"operationId\":\"hello\",\"produces\":[\"text/plain\"],\"parameters\":[{\"name\":\"name\"," +
+            "\"in\":\"path\",\"description\":\"The user name\",\"required\":true,\"type\":\"string\"}]," +
+            "\"responses\":{\"200\":{\"description\":\"successful operation\",\"schema\":{\"type\":\"string\"}}}}}}}";
     private static final String SWAGGER_YAML = "---\n" +
             "swagger: \"2.0\"\n" +
             "info:\n" +

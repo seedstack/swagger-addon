@@ -22,7 +22,7 @@
     <version>2.0.2-SNAPSHOT</version>
 
     <properties>
-        <seed.version>3.5.1-SNAPSHOT</seed.version>
+        <seed.version>3.5.1</seed.version>
 
         <compatibility.skip>true</compatibility.skip>
 
@@ -58,6 +58,7 @@
                             <licenseMerge>Apache 2|The Apache Software License, Version 2.0</licenseMerge>
                             <licenseMerge>Apache 2|Apache License, version 2.0</licenseMerge>
                             <licenseMerge>Apache 2|The Apache License, Version 2.0</licenseMerge>
+                            <licenseMerge>Apache 2|Apache 2.0</licenseMerge>
                             <licenseMerge>BSD|The New BSD License</licenseMerge>
                             <licenseMerge>BSD|The BSD License</licenseMerge>
                             <licenseMerge>CDDL|CDDL 1.1</licenseMerge>
@@ -67,8 +68,11 @@
                             <licenseMerge>CDDL|CDDL/GPLv2+CE</licenseMerge>
                             <licenseMerge>LGPL 3.0|GNU Lesser Public License</licenseMerge>
                             <licenseMerge>MIT|MIT License</licenseMerge>
+                            <licenseMerge>MIT|MIT license</licenseMerge>
+                            <licenseMerge>MIT|The MIT License</licenseMerge>
                             <licenseMerge>IGNORED_LICENSE|GPL2 w/ CPE</licenseMerge>
                             <licenseMerge>IGNORED_LICENSE|MPL 1.1</licenseMerge>
+                            <licenseMerge>IGNORED_LICENSE|GNU General Public License, version 2 (GPL2), with the classpath exception</licenseMerge>
                         </licenseMerges>
                     </configuration>
                 </plugin>
@@ -99,6 +103,10 @@
             <artifactId>swagger-jersey2-jaxrs</artifactId>
             <version>1.5.16</version>
             <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>org.glassfish.jersey.containers</groupId>
                     <artifactId>jersey-container-servlet-core</artifactId>

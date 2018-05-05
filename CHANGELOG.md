@@ -1,4 +1,4 @@
-# Version 2.0.2 (2018-04-28)
+# Version 2.0.2 (2018-05-05)
 
 * [chg] Update Jackson version.
 

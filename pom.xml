@@ -23,10 +23,9 @@
 
     <properties>
         <seed.version>3.6.0</seed.version>
-
         <compatibility.skip>true</compatibility.skip>
-
         <bintray.package>swagger-addon</bintray.package>
+        <swagger-jersey.version>1.5.16</swagger-jersey.version>
     </properties>
 
     <build>
@@ -101,7 +100,7 @@
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-jersey2-jaxrs</artifactId>
-            <version>1.5.16</version>
+            <version>${swagger-jersey.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.google.guava</groupId>

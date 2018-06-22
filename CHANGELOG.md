@@ -1,3 +1,7 @@
+# Version 2.0.3 (2018-06-22)
+
+* [chg] Update Swagger to 1.5.20
+
 # Version 2.0.2 (2018-05-05)
 
 * [chg] Update Jackson version.

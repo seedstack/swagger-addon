@@ -23,12 +23,15 @@ import org.skyscreamer.jsonassert.JSONAssert;
 public class SwaggerIT {
 
     private static final String BASE_URL = "http://localhost:9001";
-    private static final String SWAGGER_JSON = "{\"swagger\":\"2.0\",\"info\":{\"version\":\"1.0.2\",\"title\":\"Test" +
-            " API\"},\"host\":\"localhost:9001\",\"schemes\":[\"http\"]," +
-            "\"paths\":{\"/hello/{name}\":{\"get\":{\"summary\":\"Say hello the user\",\"description\":\"\"," +
-            "\"operationId\":\"hello\",\"produces\":[\"text/plain\"],\"parameters\":[{\"name\":\"name\"," +
-            "\"in\":\"path\",\"description\":\"The user name\",\"required\":true,\"type\":\"string\"}]," +
-            "\"responses\":{\"200\":{\"description\":\"successful operation\",\"schema\":{\"type\":\"string\"}}}}}}}";
+    private static final String SWAGGER_JSON = "{\"swagger\":\"2.0\",\"info\":{\"version\":\"1.0.2\","+
+                                               "\"title\":\"Test API\"},\"host\":\"localhost:9001\",\"schemes\":[\"http\"],"+
+                                               "\"paths\":{\"/hello/{name}\":{\"get\":{\"summary\":\"Say hello the user\"," +
+                                               "\"description\":\"\",\"operationId\":\"hello\",\"produces\":[\"text/plain\"]," +
+                                               "\"parameters\":[{\"name\":\"name\",\"in\":\"path\",\"description\":\"The user name\"," +
+                                               "\"required\":true,\"type\":\"string\"},{\"name\":\"surname\",\"in\":\"query\"," +
+                                               "\"description\":\"The user surnames\",\"required\":true,\"type\":\"array\","+
+                                               "\"items\":{\"type\":\"string\"},\"collectionFormat\":\"multi\"}],\"responses\":" +
+                                               "{\"200\":{\"description\":\"successful operation\",\"schema\":{\"type\":\"string\"}}}}}}}";
     private static final String SWAGGER_YAML = "---\n" +
             "swagger: \"2.0\"\n" +
             "info:\n" +
@@ -51,6 +54,14 @@ public class SwaggerIT {
             "        description: \"The user name\"\n" +
             "        required: true\n" +
             "        type: \"string\"\n" +
+            "      - name: \"surname\"\n" +
+            "        in: \"query\"\n" +
+            "        description: \"The user surnames\"\n" +
+            "        required: true\n" +
+            "        type: \"array\"\n" +
+            "        items:\n" +
+            "          type: \"string\"\n" +
+            "        collectionFormat: \"multi\"\n" +
             "      responses:\n" +
             "        200:\n" +
             "          description: \"successful operation\"\n" +
@@ -62,7 +73,7 @@ public class SwaggerIT {
     @Before
     public void setUp() throws Exception {
         launcher = Seed.getLauncher();
-        launcher.launch(new String[]{});
+        launcher.launch(new String[] {});
     }
 
     @Test

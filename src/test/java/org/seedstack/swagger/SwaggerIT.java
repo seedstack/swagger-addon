@@ -24,7 +24,7 @@ public class SwaggerIT {
 
     private static final String BASE_URL = "http://localhost:9001";
     private static final String SWAGGER_JSON = "{\"swagger\":\"2.0\",\"info\":{\"version\":\"1.0.2\","+
-                                               "\"title\":\"Test API\"},\"host\":\"localhost:9001\",\"schemes\":[\"http\"],"+
+                                               "\"title\":\"Test API\"},\"host\":\"localhost:9001\",\"basePath\":\"/context/api\",\"schemes\":[\"http\"],"+
                                                "\"paths\":{\"/hello/{name}\":{\"get\":{\"summary\":\"Say hello the user\"," +
                                                "\"description\":\"\",\"operationId\":\"hello\",\"produces\":[\"text/plain\"]," +
                                                "\"parameters\":[{\"name\":\"name\",\"in\":\"path\",\"description\":\"The user name\"," +
@@ -38,6 +38,7 @@ public class SwaggerIT {
             "  version: \"1.0.2\"\n" +
             "  title: \"Test API\"\n" +
             "host: \"localhost:9001\"\n" +
+            "basePath: \"/context/api\"\n" +
             "schemes:\n" +
             "- \"http\"\n" +
             "paths:\n" +
@@ -79,7 +80,7 @@ public class SwaggerIT {
     @Test
     public void exposeSwaggerJson() throws Exception {
         Response response = expect().statusCode(200).given().contentType(MediaType.APPLICATION_JSON)
-                .get(BASE_URL + "/swagger.json");
+                .get(BASE_URL + "/context/api/swagger.json");
 
         JSONAssert.assertEquals(SWAGGER_JSON, response.asString(), true);
     }
@@ -87,7 +88,7 @@ public class SwaggerIT {
     @Test
     public void exposeSwaggerYaml() throws Exception {
         String response = expect().statusCode(200).given().contentType(MediaType.APPLICATION_JSON)
-                .get(BASE_URL + "/swagger.yaml").asString();
+                .get(BASE_URL + "/context/api/swagger.yaml").asString();
 
         Assertions.assertThat(response).isEqualTo(SWAGGER_YAML);
     }

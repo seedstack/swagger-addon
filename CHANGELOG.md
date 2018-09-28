@@ -1,3 +1,7 @@
+# Version 2.0.4 (2018-09-28)
+
+* [fix] Take the servlet context path into account for default basePath value.
+
 # Version 2.0.3 (2018-06-22)
 
 * [chg] Update Swagger to 1.5.20

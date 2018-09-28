@@ -9,8 +9,11 @@
 application:
   name: Test API
   version: 1.0.2
+rest: /api
 web:
-  server: 9001
+  server:
+    port: 9001
+    contextPath: /context
   cors:
     enabled: true
     properties:

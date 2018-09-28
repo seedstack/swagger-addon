@@ -22,7 +22,9 @@ import io.swagger.models.Swagger;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import javax.servlet.ServletContext;
 import org.seedstack.seed.Application;
+import org.seedstack.seed.core.SeedRuntime;
 import org.seedstack.seed.core.internal.AbstractSeedPlugin;
 import org.seedstack.seed.rest.RestConfig;
 import org.seedstack.seed.rest.internal.RestPlugin;
@@ -31,6 +33,7 @@ import org.seedstack.swagger.SwaggerConfig;
 
 public class SwaggerPlugin extends AbstractSeedPlugin implements RestProvider {
     private Swagger swagger;
+    private ServletContext servletContext;
 
     @Override
     public String name() {
@@ -40,6 +43,11 @@ public class SwaggerPlugin extends AbstractSeedPlugin implements RestProvider {
     @Override
     public Collection<Class<?>> dependencies() {
         return Lists.newArrayList(RestPlugin.class);
+    }
+
+    @Override
+    protected void setup(SeedRuntime seedRuntime) {
+        servletContext = seedRuntime.contextAs(ServletContext.class);
     }
 
     @Override
@@ -66,8 +74,11 @@ public class SwaggerPlugin extends AbstractSeedPlugin implements RestProvider {
 
     private void configureWithDefaultValues(SwaggerConfig swaggerConfig, RestConfig restConfig,
             Application application) {
-        if (isNullOrEmpty(swaggerConfig.getBasePath()) && !isNullOrEmpty(restConfig.getPath())) {
-            swaggerConfig.setBasePath(restConfig.getPath());
+        if (isNullOrEmpty(swaggerConfig.getBasePath())) {
+            String basePath = buildPath(servletContext.getContextPath(), restConfig.getPath());
+            if (!isNullOrEmpty(basePath)) {
+                swaggerConfig.setBasePath(basePath);
+            }
         }
         if (isNullOrEmpty(swaggerConfig.getTitle())) {
             swaggerConfig.setTitle(application.getName());
@@ -93,5 +104,31 @@ public class SwaggerPlugin extends AbstractSeedPlugin implements RestProvider {
     @Override
     public Set<Class<?>> providers() {
         return Sets.newHashSet(SwaggerSerializers.class);
+    }
+
+    private static String buildPath(String first, String... parts) {
+        StringBuilder result = new StringBuilder(first);
+
+        if (parts != null) {
+            for (String part : parts) {
+                if (result.length() == 0) {
+                    if (part.startsWith("/")) {
+                        result.append(part.substring(1));
+                    } else {
+                        result.append(part);
+                    }
+                } else {
+                    if (result.toString().endsWith("/") && part.startsWith("/")) {
+                        result.append(part.substring(1));
+                    } else if (!result.toString().endsWith("/") && !part.startsWith("/") && !part.isEmpty()) {
+                        result.append("/").append(part);
+                    } else {
+                        result.append(part);
+                    }
+                }
+            }
+        }
+
+        return result.toString();
     }
 }

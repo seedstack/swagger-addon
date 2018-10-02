@@ -1,5 +1,8 @@
-# Version 2.0.4 (2018-09-28)
+# Version 2.1.0 (2018-10-12)
 
+* [new] Classes annotated with `SwaggerDefinition` are detected.
+* [new] Swagger filters (implementations of `SwaggerSpecFilter`) are injectable.  
+* [new] Reader listeners (implementations of `ReaderListener`) are injectable if they extend `BaseReaderListener`.
 * [fix] Take the servlet context path into account for default basePath value.
 
 # Version 2.0.3 (2018-06-22)

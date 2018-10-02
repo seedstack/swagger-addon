@@ -156,8 +156,4 @@ public class SwaggerConfig {
         this.filterClass = filterClass;
         return this;
     }
-
-    private boolean isNotEmpty(String s) {
-        return s != null && !s.equals("");
-    }
 }

@@ -9,7 +9,6 @@
 package org.seedstack.swagger.internal;
 
 import com.google.common.collect.Lists;
-import io.swagger.config.FilterFactory;
 import io.swagger.core.filter.SpecFilter;
 import io.swagger.core.filter.SwaggerSpecFilter;
 import io.swagger.models.Scheme;
@@ -18,28 +17,38 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import javax.ws.rs.NotFoundException;
+import javax.inject.Provider;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 public abstract class AbstractSwaggerResource {
-
+    @Inject
+    private Provider<SwaggerSpecFilter> swaggerSpecFilterProvider;
     @Inject
     private Swagger swagger;
 
-    protected Object getListing(HttpHeaders headers, UriInfo uriInfo) {
-        addRequestInfoToSwagger(uriInfo);
-        if (swagger != null) {
-            swagger = getFilteredSwagger(headers, uriInfo, swagger);
-            return serializeSwagger(swagger);
-        } else {
-            throw new NotFoundException();
-        }
+    protected Swagger getSwagger(HttpHeaders headers, UriInfo uriInfo) {
+        Swagger filteredSwagger = filterSwagger(headers, uriInfo);
+        addRequestInfoToSwagger(filteredSwagger, uriInfo);
+        return filteredSwagger;
     }
 
-    protected void addRequestInfoToSwagger(UriInfo uriInfo) {
+    private Swagger filterSwagger(HttpHeaders headers, UriInfo uriInfo) {
+        SwaggerSpecFilter swaggerSpecFilter = swaggerSpecFilterProvider.get();
+        if (swaggerSpecFilter != null) {
+            SpecFilter f = new SpecFilter();
+            swagger = f.filter(swagger,
+                    swaggerSpecFilter,
+                    getQueryParams(uriInfo),
+                    getCookies(headers),
+                    getHeaders(headers));
+        }
+        return swagger;
+    }
+
+    private void addRequestInfoToSwagger(Swagger swagger, UriInfo uriInfo) {
         if (swagger.getSchemes() == null || swagger.getSchemes().isEmpty()) {
             swagger.setSchemes(Lists.newArrayList(Scheme.forValue(uriInfo.getBaseUri().getScheme())));
         }
@@ -48,27 +57,11 @@ public abstract class AbstractSwaggerResource {
         }
     }
 
-    private Swagger getFilteredSwagger(HttpHeaders headers, UriInfo uriInfo, Swagger swagger) {
-        SwaggerSpecFilter filterImpl = FilterFactory.getFilter();
-        if (filterImpl != null) {
-            SpecFilter f = new SpecFilter();
-            swagger = f.filter(swagger,
-                    filterImpl,
-                    getQueryParams(uriInfo.getQueryParameters()),
-                    getCookies(headers),
-                    getHeaders(headers));
-        }
-        return swagger;
-    }
-
-    protected Object serializeSwagger(Swagger swagger) {
-        return swagger;
-    }
-
-    private Map<String, List<String>> getQueryParams(MultivaluedMap<String, String> params) {
+    private Map<String, List<String>> getQueryParams(UriInfo uriInfo) {
         Map<String, List<String>> output = new HashMap<>();
-        if (params != null) {
-            output.putAll(params);
+        MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
+        if (queryParameters != null) {
+            output.putAll(queryParameters);
         }
         return output;
     }

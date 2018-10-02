@@ -10,7 +10,6 @@ package org.seedstack.swagger.internal;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.models.Swagger;
-import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -21,15 +20,10 @@ import javax.ws.rs.core.UriInfo;
 
 @Path("/swagger.json")
 public class SwaggerJsonResource extends AbstractSwaggerResource {
-
-    @Context
-    private ServletContext context;
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "The swagger definition in JSON", hidden = true)
     public Swagger getListingJson(@Context HttpHeaders headers, @Context UriInfo uriInfo) {
-        return (Swagger) getListing(headers, uriInfo);
+        return getSwagger(headers, uriInfo);
     }
-
 }

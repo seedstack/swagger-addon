@@ -8,31 +8,28 @@
 
 package org.seedstack.swagger.internal;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.inject.Module;
-import com.google.inject.Scopes;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
+import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.jaxrs.listing.SwaggerSerializers;
-import io.swagger.models.Swagger;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.servlet.ServletContext;
-import org.seedstack.seed.Application;
 import org.seedstack.seed.core.SeedRuntime;
 import org.seedstack.seed.core.internal.AbstractSeedPlugin;
-import org.seedstack.seed.rest.RestConfig;
 import org.seedstack.seed.rest.internal.RestPlugin;
 import org.seedstack.seed.rest.spi.RestProvider;
 import org.seedstack.swagger.SwaggerConfig;
 
 public class SwaggerPlugin extends AbstractSeedPlugin implements RestProvider {
-    private Swagger swagger;
+    private Collection<Class<?>> swaggerClasses;
+    private SwaggerConfig swaggerConfig;
     private ServletContext servletContext;
 
     @Override
@@ -51,84 +48,41 @@ public class SwaggerPlugin extends AbstractSeedPlugin implements RestProvider {
     }
 
     @Override
+    public Collection<ClasspathScanRequest> classpathScanRequests() {
+        return classpathScanRequestBuilder()
+                .annotationType(SwaggerDefinition.class)
+                .build();
+    }
+
+    @Override
     public InitState initialize(InitContext initContext) {
-        SwaggerConfig swaggerConfig = getConfiguration(SwaggerConfig.class);
+        swaggerConfig = getConfiguration(SwaggerConfig.class);
         RestPlugin restPlugin = initContext.dependency(RestPlugin.class);
 
-        configureWithDefaultValues(swaggerConfig, restPlugin.getRestConfig(), getApplication());
+        // Globally configure pretty printing
+        SwaggerSerializers.setPrettyPrint(swaggerConfig.isPrettyPrint());
 
-        Collection<Class<?>> resources = filterResources(restPlugin.resources());
-        swagger = new SwaggerFactory().createSwagger(swaggerConfig, resources);
+        // Merge all swagger-annotated classes in a unique set
+        swaggerClasses = Stream.concat(
+                restPlugin.resources().stream().filter(r -> r.isAnnotationPresent(Api.class)),
+                initContext.scannedClassesByAnnotationClass().get(SwaggerDefinition.class).stream()
+        ).collect(Collectors.toSet());
+
         return InitState.INITIALIZED;
-    }
-
-    private Set<Class<?>> filterResources(Set<Class<?>> resources) {
-        Set<Class<?>> filteredClasses = new HashSet<>();
-        for (Class<?> resource : resources) {
-            if (resource.getAnnotation(Api.class) != null) {
-                filteredClasses.add(resource);
-            }
-        }
-        return filteredClasses;
-    }
-
-    private void configureWithDefaultValues(SwaggerConfig swaggerConfig, RestConfig restConfig,
-            Application application) {
-        if (isNullOrEmpty(swaggerConfig.getBasePath())) {
-            String basePath = buildPath(servletContext.getContextPath(), restConfig.getPath());
-            if (!isNullOrEmpty(basePath)) {
-                swaggerConfig.setBasePath(basePath);
-            }
-        }
-        if (isNullOrEmpty(swaggerConfig.getTitle())) {
-            swaggerConfig.setTitle(application.getName());
-        }
-        if (isNullOrEmpty(swaggerConfig.getVersion())) {
-            swaggerConfig.setVersion(application.getVersion());
-        }
     }
 
     @Override
     public Object nativeUnitModule() {
-        return (Module) binder -> {
-            binder.bind(SwaggerSerializers.class).in(Scopes.SINGLETON);
-            binder.bind(Swagger.class).toInstance(swagger);
-        };
+        return new SwaggerModule(swaggerClasses, swaggerConfig, servletContext);
     }
 
     @Override
     public Set<Class<?>> resources() {
-        return new HashSet<>();
+        return Sets.newHashSet();
     }
 
     @Override
     public Set<Class<?>> providers() {
         return Sets.newHashSet(SwaggerSerializers.class);
-    }
-
-    private static String buildPath(String first, String... parts) {
-        StringBuilder result = new StringBuilder(first);
-
-        if (parts != null) {
-            for (String part : parts) {
-                if (result.length() == 0) {
-                    if (part.startsWith("/")) {
-                        result.append(part.substring(1));
-                    } else {
-                        result.append(part);
-                    }
-                } else {
-                    if (result.toString().endsWith("/") && part.startsWith("/")) {
-                        result.append(part.substring(1));
-                    } else if (!result.toString().endsWith("/") && !part.startsWith("/") && !part.isEmpty()) {
-                        result.append("/").append(part);
-                    } else {
-                        result.append(part);
-                    }
-                }
-            }
-        }
-
-        return result.toString();
     }
 }

@@ -9,15 +9,22 @@
 package org.seedstack.swagger.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.seedstack.shed.reflect.ReflectUtils.makeAccessible;
+import static org.seedstack.shed.reflect.ReflectUtils.setValue;
 
-import io.swagger.config.FilterFactory;
 import io.swagger.models.Scheme;
 import io.swagger.models.Swagger;
 import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.ServletContext;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.seedstack.coffig.Coffig;
+import org.seedstack.seed.Application;
+import org.seedstack.seed.rest.RestConfig;
 import org.seedstack.swagger.SwaggerConfig;
 
-public class SwaggerFactoryTest {
+public class SwaggerProviderTest {
     private static final String TITLE = "title";
     private static final String DESCRIPTION = "description";
     private static final String VERSION = "1.0.0";
@@ -31,17 +38,14 @@ public class SwaggerFactoryTest {
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
     private static final String BASE_PATH = "/";
-    private static final Class<MyFilter> FILTER_CLASS = MyFilter.class;
-    private SwaggerFactory underTest = new SwaggerFactory();
 
     @Test
-    public void testCreateSwaggerWithEmptyConfig() {
-        Swagger swagger = underTest.createSwagger(new SwaggerConfig(), new ArrayList<>());
-        assertThat(swagger).isNotNull();
+    public void testCreateSwaggerWithEmptyConfig() throws Exception {
+        assertThat(buildSwaggerProvider(new SwaggerConfig(), new ArrayList<>()).get()).isNotNull();
     }
 
     @Test
-    public void testCreateSwagger() {
+    public void testCreateSwagger() throws Exception {
         SwaggerConfig config = new SwaggerConfig()
                 .setTitle(TITLE)
                 .setDescription(DESCRIPTION)
@@ -57,7 +61,7 @@ public class SwaggerFactoryTest {
                 .addScheme(HTTPS)
                 .setBasePath(BASE_PATH);
 
-        Swagger swagger = underTest.createSwagger(config, new ArrayList<>());
+        Swagger swagger = buildSwaggerProvider(config, new ArrayList<>()).get();
 
         assertThat(swagger).isNotNull();
         assertThat(swagger.getInfo().getTitle()).isEqualTo(TITLE);
@@ -79,13 +83,20 @@ public class SwaggerFactoryTest {
         assertThat(swagger.getSchemes()).containsOnly(Scheme.HTTP, Scheme.HTTPS);
     }
 
-    @Test
-    public void testFilterFactory() {
-        SwaggerConfig config = new SwaggerConfig();
-        config.setFilterClass(FILTER_CLASS);
-
-        underTest.createSwagger(config, new ArrayList<>());
-
-        assertThat(FilterFactory.getFilter()).isInstanceOf(MyFilter.class);
+    private SwaggerProvider buildSwaggerProvider(SwaggerConfig swaggerConfig,
+            List<Class<?>> swaggerClasses) throws NoSuchFieldException {
+        Coffig coffig = Mockito.mock(Coffig.class);
+        Mockito.when(coffig.get(SwaggerConfig.class)).thenReturn(swaggerConfig);
+        Mockito.when(coffig.get(RestConfig.class)).thenReturn(new RestConfig());
+        Application application = Mockito.mock(Application.class);
+        Mockito.when(application.getConfiguration()).thenReturn(coffig);
+        ServletContext servletContext = Mockito.mock(ServletContext.class);
+        Mockito.when(servletContext.getContextPath()).thenReturn("");
+        SwaggerProvider swaggerProvider = new SwaggerProvider(swaggerClasses, servletContext);
+        setValue(makeAccessible(SwaggerProvider.class.getDeclaredField("application")),
+                swaggerProvider,
+                application
+        );
+        return swaggerProvider;
     }
 }

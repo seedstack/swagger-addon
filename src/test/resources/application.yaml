@@ -18,3 +18,5 @@ web:
     enabled: true
     properties:
       supportedMethods: GET, POST, HEAD, OPTIONS, PUT, DELETE
+swagger:
+  filterClass: org.seedstack.swagger.fixtures.MyFilter

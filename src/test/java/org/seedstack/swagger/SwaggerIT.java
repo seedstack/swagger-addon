@@ -9,35 +9,43 @@
 package org.seedstack.swagger;
 
 import static io.restassured.RestAssured.expect;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.Response;
 import javax.ws.rs.core.MediaType;
-import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.seedstack.seed.core.Seed;
-import org.seedstack.seed.spi.SeedLauncher;
+import org.junit.runner.RunWith;
+import org.seedstack.seed.Configuration;
+import org.seedstack.seed.testing.junit4.SeedITRunner;
+import org.seedstack.seed.undertow.LaunchWithUndertow;
+import org.seedstack.swagger.fixtures.MyApiDefinition;
+import org.seedstack.swagger.fixtures.MyFilter;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+@RunWith(SeedITRunner.class)
+@LaunchWithUndertow
 public class SwaggerIT {
-
-    private static final String BASE_URL = "http://localhost:9001";
-    private static final String SWAGGER_JSON = "{\"swagger\":\"2.0\",\"info\":{\"version\":\"1.0.2\","+
-                                               "\"title\":\"Test API\"},\"host\":\"localhost:9001\",\"basePath\":\"/context/api\",\"schemes\":[\"http\"],"+
-                                               "\"paths\":{\"/hello/{name}\":{\"get\":{\"summary\":\"Say hello the user\"," +
-                                               "\"description\":\"\",\"operationId\":\"hello\",\"produces\":[\"text/plain\"]," +
-                                               "\"parameters\":[{\"name\":\"name\",\"in\":\"path\",\"description\":\"The user name\"," +
-                                               "\"required\":true,\"type\":\"string\"},{\"name\":\"surname\",\"in\":\"query\"," +
-                                               "\"description\":\"The user surnames\",\"required\":true,\"type\":\"array\","+
-                                               "\"items\":{\"type\":\"string\"},\"collectionFormat\":\"multi\"}],\"responses\":" +
-                                               "{\"200\":{\"description\":\"successful operation\",\"schema\":{\"type\":\"string\"}}}}}}}";
+    @Configuration("web.runtime.baseUrl")
+    private String baseUrl;
+    @Configuration("web.runtime.port")
+    private int port;
+    private static final String SWAGGER_JSON = "{\"swagger\":\"2.0\",\"info\":{\"version\":\"1.0.2\"," +
+            "\"title\":\"Test API\"},\"host\":\"localhost:%d\",\"basePath\":\"/context/api\"," +
+            "\"schemes\":[\"http\"]," +
+            "\"paths\":{\"/hello/{name}\":{\"get\":{\"summary\":\"Say hello the user\"," +
+            "\"description\":\"\",\"operationId\":\"hello\",\"produces\":[\"text/plain\"]," +
+            "\"parameters\":[{\"name\":\"name\",\"in\":\"path\",\"description\":\"The user name\"," +
+            "\"required\":true,\"type\":\"string\"},{\"name\":\"surname\",\"in\":\"query\"," +
+            "\"description\":\"The user surnames\",\"required\":true,\"type\":\"array\"," +
+            "\"items\":{\"type\":\"string\"},\"collectionFormat\":\"multi\"}],\"responses\":" +
+            "{\"200\":{\"description\":\"successful operation\",\"schema\":{\"type\":\"string\"}}}}}}," +
+            "\"securityDefinitions\":{\"basic\":{\"description\":\"Basic authentication\",\"type\":\"basic\"}}}";
     private static final String SWAGGER_YAML = "---\n" +
             "swagger: \"2.0\"\n" +
             "info:\n" +
             "  version: \"1.0.2\"\n" +
             "  title: \"Test API\"\n" +
-            "host: \"localhost:9001\"\n" +
+            "host: \"localhost:%d\"\n" +
             "basePath: \"/context/api\"\n" +
             "schemes:\n" +
             "- \"http\"\n" +
@@ -67,35 +75,39 @@ public class SwaggerIT {
             "        200:\n" +
             "          description: \"successful operation\"\n" +
             "          schema:\n" +
-            "            type: \"string\"\n";
-
-    private SeedLauncher launcher;
-
-    @Before
-    public void setUp() throws Exception {
-        launcher = Seed.getLauncher();
-        launcher.launch(new String[] {});
-    }
+            "            type: \"string\"\n" +
+            "securityDefinitions:\n" +
+            "  basic:\n" +
+            "    description: \"Basic authentication\"\n" +
+            "    type: \"basic\"\n";
 
     @Test
     public void exposeSwaggerJson() throws Exception {
         Response response = expect().statusCode(200).given().contentType(MediaType.APPLICATION_JSON)
-                .get(BASE_URL + "/context/api/swagger.json");
+                .get(baseUrl + "api/swagger.json");
 
-        JSONAssert.assertEquals(SWAGGER_JSON, response.asString(), true);
+        JSONAssert.assertEquals(String.format(SWAGGER_JSON, port), response.asString(), true);
+        checkReaderListenerCalled();
+        checkFilterCalled();
     }
 
     @Test
     public void exposeSwaggerYaml() throws Exception {
         String response = expect().statusCode(200).given().contentType(MediaType.APPLICATION_JSON)
-                .get(BASE_URL + "/context/api/swagger.yaml").asString();
+                .get(baseUrl + "api/swagger.yaml").asString();
 
-        Assertions.assertThat(response).isEqualTo(SWAGGER_YAML);
+        assertThat(response).isEqualTo(String.format(SWAGGER_YAML, port));
+        checkReaderListenerCalled();
+        checkFilterCalled();
     }
 
-    @After
-    public void tearDown() throws Exception {
-        launcher.shutdown();
+    private void checkReaderListenerCalled() {
+        assertThat(MyApiDefinition.beforeCalled).isTrue();
+        assertThat(MyApiDefinition.afterCalled).isTrue();
     }
 
+    private void checkFilterCalled() {
+        assertThat(MyFilter.opAllowedCalled).isTrue();
+        assertThat(MyFilter.paramAllowedCalled).isTrue();
+    }
 }

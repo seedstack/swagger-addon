@@ -1,4 +1,4 @@
-# Version 2.1.0 (2018-10-12)
+# Version 2.1.0 (2018-10-18)
 
 * [new] Classes annotated with `SwaggerDefinition` are detected.
 * [new] Swagger filters (implementations of `SwaggerSpecFilter`) are injectable.  

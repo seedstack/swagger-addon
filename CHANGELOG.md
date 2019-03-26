@@ -1,3 +1,8 @@
+# Version 2.1.1 (2019-03-26)
+
+* [chg] Update Swagger to 1.5.22
+* [chg] Update Seed to 3.8.5
+
 # Version 2.1.0 (2018-10-18)
 
 * [new] Classes annotated with `SwaggerDefinition` are detected.

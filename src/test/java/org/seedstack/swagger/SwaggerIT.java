@@ -1,11 +1,10 @@
 /*
- * Copyright © 2013-2018, The SeedStack authors <http://seedstack.org>
+ * Copyright © 2013-2019, The SeedStack authors <http://seedstack.org>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-
 package org.seedstack.swagger;
 
 import static io.restassured.RestAssured.expect;
@@ -25,9 +24,9 @@ import org.skyscreamer.jsonassert.JSONAssert;
 @RunWith(SeedITRunner.class)
 @LaunchWithUndertow
 public class SwaggerIT {
-    @Configuration("web.runtime.baseUrl")
+    @Configuration("runtime.web.baseUrlSlash")
     private String baseUrl;
-    @Configuration("web.runtime.port")
+    @Configuration("runtime.web.server.port")
     private int port;
     private static final String SWAGGER_JSON = "{\"swagger\":\"2.0\",\"info\":{\"version\":\"1.0.2\"," +
             "\"title\":\"Test API\"},\"host\":\"localhost:%d\",\"basePath\":\"/context/api\"," +

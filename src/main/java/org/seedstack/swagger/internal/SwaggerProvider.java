@@ -108,9 +108,9 @@ class SwaggerProvider implements Provider<Swagger> {
             for (String part : parts) {
                 if (result.length() == 0) {
                     if (part.startsWith("/")) {
-                        result.append(part.substring(1));
-                    } else {
                         result.append(part);
+                    } else {
+                        result.append("/").append(part);
                     }
                 } else {
                     if (result.toString().endsWith("/") && part.startsWith("/")) {

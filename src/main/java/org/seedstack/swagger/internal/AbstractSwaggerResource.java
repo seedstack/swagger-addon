@@ -52,7 +52,11 @@ public abstract class AbstractSwaggerResource {
             swagger.setSchemes(Lists.newArrayList(Scheme.forValue(uriInfo.getBaseUri().getScheme())));
         }
         if (swagger.getHost() == null || swagger.getHost().equals("")) {
-            swagger.setHost(uriInfo.getBaseUri().getHost() + ":" + uriInfo.getBaseUri().getPort());
+            if(uriInfo.getBaseUri().getPort() > 0) {
+                swagger.setHost(uriInfo.getBaseUri().getHost() + ":" + uriInfo.getBaseUri().getPort());
+            } else {
+                swagger.setHost(uriInfo.getBaseUri().getHost());
+            }
         }
     }
 

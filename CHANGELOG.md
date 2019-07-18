@@ -1,3 +1,8 @@
+# Version 2.1.2 (2019-07-18)
+
+* [fix] Fix missing leading / in the generated basePath (#7) .
+* [fix] Fix host contains the port -1 if the application is on the default port (#5). 
+
 # Version 2.1.1 (2019-03-26)
 
 * [chg] Update Swagger to 1.5.22

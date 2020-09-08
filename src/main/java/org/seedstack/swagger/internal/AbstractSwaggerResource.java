@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013-2019, The SeedStack authors <http://seedstack.org>
+ * Copyright © 2013-2020, The SeedStack authors <http://seedstack.org>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -52,7 +52,7 @@ public abstract class AbstractSwaggerResource {
             swagger.setSchemes(Lists.newArrayList(Scheme.forValue(uriInfo.getBaseUri().getScheme())));
         }
         if (swagger.getHost() == null || swagger.getHost().equals("")) {
-            if(uriInfo.getBaseUri().getPort() > 0) {
+            if (uriInfo.getBaseUri().getPort() > 0) {
                 swagger.setHost(uriInfo.getBaseUri().getHost() + ":" + uriInfo.getBaseUri().getPort());
             } else {
                 swagger.setHost(uriInfo.getBaseUri().getHost());

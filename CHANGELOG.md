@@ -1,3 +1,8 @@
+# Version 2.1.3 (2020-09-15)
+
+* [chg] Update Swagger to 1.6.2
+* [chg] Update Seed to 3.10.0
+
 # Version 2.1.2 (2019-07-18)
 
 * [fix] Fix missing leading / in the generated basePath (#7) .

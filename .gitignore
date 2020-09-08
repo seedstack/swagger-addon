@@ -18,3 +18,7 @@ release.properties
 #Vim
 *~
 
+/.metadata/
+Servers/
+.sonarlint/
+Servers/
